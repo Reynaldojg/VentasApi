@@ -17,6 +17,7 @@ public static class DependencyInjection
         // "Cuando alguien pida ICategoriaRepository, dale un CategoriaRepository".
         // AddScoped = una instancia nueva por cada petición HTTP.
         services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+        services.AddScoped<IProductoRepository, ProductoRepository>();
         services.AddScoped<IAuditiEntityRepository, AuditiEntityRepository>();
         return services;
     }
