@@ -3,9 +3,7 @@ using VentasApi.Operations;
 
 namespace VentasApi.Repository.IRepository;
 
-// Interfaz (contrato) del repositorio de auditoría.
-// Solo tiene Add, GetAll y GetById: un historial de auditoría no debería
-// editarse ni borrarse, por eso no hereda de IRepositoryBase.
+// Sin Update ni Delete: el historial no se modifica.
 public interface IAuditiEntityRepository
 {
         Task <OperationResult<AuditiEntity>> Add(AuditiEntity entity);

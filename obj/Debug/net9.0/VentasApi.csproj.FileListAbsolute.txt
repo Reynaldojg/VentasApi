@@ -165,3 +165,4 @@ C:\Users\Asus\OneDrive\Escritorio\CosasQueMeGustan\estudios\PracticasApi\VentasA
 C:\Users\Asus\OneDrive\Escritorio\CosasQueMeGustan\estudios\PracticasApi\VentasApi\obj\Debug\net9.0\VentasApi.genruntimeconfig.cache
 C:\Users\Asus\OneDrive\Escritorio\CosasQueMeGustan\estudios\PracticasApi\VentasApi\obj\Debug\net9.0\ref\VentasApi.dll
 c:\Users\Asus\OneDrive\Escritorio\CosasQueMeGustan\estudios\PracticasApi\VentasApi\obj\Debug\net9.0\swae.build.ex.cache
+c:\Users\Asus\OneDrive\Escritorio\CosasQueMeGustan\estudios\PracticasApi\VentasApi\obj\Debug\net9.0\VentasApi.sourcelink.json

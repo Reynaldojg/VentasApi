@@ -2,28 +2,18 @@ using System;
 
 namespace VentasApi.Operations;
 
-// Entidad de AUDITORÍA: guarda un historial de qué se hizo, sobre qué registro,
-// cuándo y quién lo hizo. Se convierte en la tabla "AuditiEntities".
+// Historial de cambios (tabla "AuditiEntities"): qué se hizo, sobre qué registro y cuándo.
 public class AuditiEntity
 {
     public int Id { get; set; }
-
-    // Nombre de la entidad afectada, por ejemplo "Categoria" o "Producto".
-    public string? EntityName { get; set; }
-
-    // ID del registro afectado dentro de esa entidad.
-    public int EntityId { get; set; }
-
-    // Tipo de operación: por ejemplo "Crear", "Actualizar" o "Eliminar".
-    public string? OperationType { get; set; }
-
-    // Momento en que ocurrió la acción.
+    public string? EntityName { get; set; }     // tabla afectada, ej. "Categoria"
+    public int EntityId { get; set; }           // ID del registro afectado
+    public string? OperationType { get; set; }  // "Agregar", "Actualizar" o "Eliminar"
     public DateTime FechaAccion { get; set; }
 
-    // Valores antes y después del cambio (normalmente guardados como texto JSON).
+    // Cómo estaba antes y cómo quedó después, guardado como JSON.
     public string? OldValues { get; set; }
     public string? NewValues { get; set; }
 
-    // Usuario que realizó la acción (útil cuando haya autenticación).
-    public string? UserId { get; set; }
+    public string? UserId { get; set; }   // quién lo hizo (para cuando haya login)
 }

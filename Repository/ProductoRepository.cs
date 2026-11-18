@@ -1,4 +1,6 @@
 using System;
+using Azure;
+using Microsoft.EntityFrameworkCore;
 using VentasApi.Data;
 using VentasApi.Models;
 using VentasApi.Operations;
@@ -13,38 +15,79 @@ public class ProductoRepository : IProductoRepository
     {
         _DB = dB;
     }
-    public Task<OperationResult<ICollection<Producto>>> GetAll()
+    public async Task<OperationResult<ICollection<Producto>>> GetAll()
     {
-        throw new NotImplementedException();
+        var producto = await _DB.productos
+        .AsNoTracking()
+        .Include(c => c.Categoria)
+        .OrderBy(c =>c.Nombre)
+        .ToListAsync();
+
+        return OperationResult<ICollection<Producto>>.Success(producto);
     }
 
-    public Task<OperationResult<Producto>> GetById(int id)
+    public async Task<OperationResult<Producto>> GetById(int id)
     {
-        throw new NotImplementedException();
+        var producto = await _DB.productos
+        .Include(c => c.CategoriaId)
+        .FirstOrDefaultAsync(p => p.ID == id);
+
+        if(producto == null)
+            return OperationResult<Producto>.Failure("el producto no existe");
+        
+        return OperationResult<Producto>.Success(producto);
     }
-    public Task<OperationResult<Producto>> Add(Producto entity)
+    public async Task<OperationResult<Producto>> Add(Producto producto)
     {
-        throw new NotImplementedException();
+        producto.FechaCreacion = DateTime.UtcNow;
+        await _DB.productos.AddAsync(producto);
+        var resultado = await SaveChanges();
+
+        if(!resultado.IsSuccess)
+            return OperationResult<Producto>.Failure(resultado.Message);
+        
+        return OperationResult<Producto>.Success(producto);
     }
 
-    public Task<OperationResult<Producto>> Update(Producto entity)
+    public async Task<OperationResult<Producto>> Update(Producto producto)
     {
-        throw new NotImplementedException();
+        producto.FechaModificacion = DateTime.UtcNow;
+        _DB.productos.Update(producto);
+        var resultado = await SaveChanges();
+
+        if(!resultado.IsSuccess)
+            return OperationResult<Producto>.Failure(resultado.Message);
+        
+        return OperationResult<Producto>.Success(producto);
     }
 
-    public Task<OperationResult<Producto>> Delete(Producto entity)
+    public async Task<OperationResult<Producto>> Delete(Producto producto)
     {
-        throw new NotImplementedException();
+        _DB.productos.Remove(producto);
+        var resultado = await SaveChanges();
+
+        if(!resultado.IsSuccess)
+            return OperationResult<Producto>.Failure("Error al eliminar cateoria");
+        
+        return OperationResult<Producto>.Success(producto, "Producto eliminado");
     }
 
-    public Task<bool> ExisteNombre(string nombre)
+    public async Task<bool> ExisteNombre(string nombre)
     {
-        throw new NotImplementedException();
+        return await _DB.productos.AnyAsync(p => p.Nombre == nombre);
     }
 
-    public Task<OperationResult<bool>> SaveChanges()
+    public async Task<OperationResult<bool>> SaveChanges()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var filasAfectadas = await _DB.SaveChangesAsync();
+            return OperationResult<bool>.Success(filasAfectadas > 0);
+        }
+        catch(DbUpdateException ex)
+        {
+            return OperationResult<bool>.Failure($"Error al guardar cambios: {ex.InnerException?.Message?? ex.Message}");
+        }
     }
 
 }

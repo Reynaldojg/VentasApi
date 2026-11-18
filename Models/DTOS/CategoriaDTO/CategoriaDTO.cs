@@ -2,9 +2,7 @@ using System;
 
 namespace VentasApi.Models.DTOS.CategoriaDTO;
 
-// DTO = Data Transfer Object (objeto de transferencia de datos).
-// Es lo que la API DEVUELVE al cliente. Sirve para no exponer la entidad completa
-// (por ejemplo, aquí ocultamos FechaCreacion y FechaModificacion).
+// DTO de salida: lo que la API devuelve. No expone las fechas de la entidad.
 public class CategoriaDTO
 {
     public int ID {get; set;}

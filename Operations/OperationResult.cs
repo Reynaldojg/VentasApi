@@ -2,24 +2,18 @@ using System;
 
 namespace VentasApi.Operations;
 
-// Clase "envoltorio" (patrón Result) para devolver el resultado de una operación
-// de forma uniforme: si salió bien o no, un mensaje y los datos.
-// Así evitamos lanzar excepciones para errores esperados (ej. "no existe").
-// <T> es un GENÉRICO: T puede ser Categoria, List<Producto>, bool, etc.
+// Envoltorio para devolver resultados siempre igual: ¿salió bien?, un mensaje y los datos.
+// Así no se lanzan excepciones para errores esperados (ej. "no existe").
+// <T> = el tipo de dato que devuelve (Categoria, List<Producto>, bool...).
 public class OperationResult<T>
 {
-        // true si la operación salió bien, false si falló.
         public bool IsSuccess { get; set; }
         public string Message { get; set; } = string.Empty;
-        // Los datos devueltos (pueden ser null si hubo error).
-        public T? Data { get; set; }
+        public T? Data { get; set; }   // null si hubo error
 
-        // Métodos "fábrica" estáticos: se llaman sin crear un objeto antes,
-        // por ejemplo: OperationResult<Categoria>.Success(categoria)
-        // "message" es un parámetro opcional: si no lo pasas, usa el valor por defecto.
+        // Uso: OperationResult<Categoria>.Success(categoria)
         public static OperationResult<T> Success(T data, string message = "Operacion existosa")
         {
-            // Inicializador de objeto: crea la instancia y asigna propiedades en un solo paso.
             return new OperationResult<T>
             {
                 IsSuccess = true,
@@ -28,14 +22,14 @@ public class OperationResult<T>
             };
         }
 
+        // Uso: OperationResult<Categoria>.Failure("La categoria no existe")
         public static OperationResult<T> Failure(string message)
         {
             return new OperationResult<T>
             {
                 IsSuccess = false,
                 Message = message,
-                // default(T) = valor por defecto del tipo: null para clases, 0 para int, false para bool.
-                Data = default(T)
+                Data = default(T) // valor vacío del tipo: null, 0 o false
             };
         }
 }

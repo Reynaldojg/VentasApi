@@ -1,43 +1,28 @@
 using VentasApi;
 using Scalar.AspNetCore;
 
-// El "builder" sirve para configurar la aplicación ANTES de arrancarla:
-// aquí registramos servicios, leemos appsettings.json, etc.
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Registramos la base de datos, los repositorios y los services.
-// Los métodos están definidos en DependencyInjection.cs
+// 1) Registrar servicios (los métodos están en DependencyInjection.cs).
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddRepository();
 builder.Services.AddServices();
 
-// Habilita el uso de controladores (clases que heredan de ControllerBase).
-builder.Services.AddControllers();
+builder.Services.AddControllers();   // habilita los controladores
+builder.Services.AddOpenApi();       // genera la documentación de los endpoints
 
-// Genera la documentación OpenAPI (la descripción de todos tus endpoints).
-builder.Services.AddOpenApi();
-
-// A partir de aquí la configuración de servicios queda cerrada y se construye la app.
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-// El "pipeline" es la cadena de middlewares por la que pasa cada petición, EN ORDEN.
+// 2) Pipeline: pasos por los que pasa cada petición, en este orden.
 if (app.Environment.IsDevelopment())
 {
-    // Solo en desarrollo exponemos el documento OpenAPI (normalmente en /openapi/v1.json).
+    // Documentación y pantalla de pruebas (Scalar), solo en desarrollo.
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
 
-// Redirige automáticamente las peticiones http:// a https://
-app.UseHttpsRedirection();
+app.UseHttpsRedirection();   // http -> https
+app.UseAuthorization();      // revisa [Authorize] (cuando haya login)
+app.MapControllers();        // conecta las rutas [Route]/[HttpGet] con las URLs
 
-// Middleware de autorización (revisa atributos como [Authorize] en los controladores).
-app.UseAuthorization();
-
-// Conecta las rutas de los controladores ([Route], [HttpGet], etc.) con las URLs.
-app.MapControllers();
-
-// Arranca el servidor y se queda escuchando peticiones.
 app.Run();

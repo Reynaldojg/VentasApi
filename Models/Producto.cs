@@ -2,26 +2,20 @@ using System;
 
 namespace VentasApi.Models;
 
-// Entidad que EF Core convierte en la tabla "productos".
+// Entidad: EF la convierte en la tabla "productos".
 public class Producto
 {
-    // Clave primaria (por convención del nombre "ID").
-    public int ID { get; set; }
+    public int ID { get; set; }   // clave primaria, autoincremental
     public string Nombre { get; set; } = string.Empty;
 
-    // decimal es el tipo recomendado para dinero (double/float pierden precisión).
-    // Su precisión (18,2) se configura en DBContext.OnModelCreating.
+    // decimal para dinero (double pierde precisión). El (18,2) está en DBContext.
     public decimal Precio { get; set; }
     public int Stock { get; set; }
 
-    // --- Relación con Categoria (muchos productos pertenecen a una categoría) ---
-    // CategoriaId es la CLAVE FORÁNEA (FK): guarda el ID de la categoría en la tabla.
-    // EF la reconoce por convención: nombre de la navegación ("Categoria") + "Id".
+    // Clave foránea: guarda el ID de la categoría a la que pertenece.
     public int CategoriaId { get; set; }
 
-    // Propiedad de NAVEGACIÓN: permite acceder al objeto Categoria completo desde el producto
-    // (por ejemplo producto.Categoria.Nombre). No crea columna; EF la llena cuando
-    // usas .Include(p => p.Categoria) en una consulta. Lleva "?" porque puede no estar cargada.
+    // Navegación: el objeto Categoria completo. No es columna; llega null si no usas .Include(p => p.Categoria).
     public Categoria? Categoria { get; set; }
 
     public DateTime? FechaCreacion {get; set;}
