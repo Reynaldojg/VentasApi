@@ -19,6 +19,9 @@ if (app.Environment.IsDevelopment())
     // Documentación y pantalla de pruebas (Scalar), solo en desarrollo.
     app.MapOpenApi();
     app.MapScalarApiReference();
+
+    // Si entras a la raíz (http://localhost:5223/), te manda directo a Scalar.
+    app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
 }
 
 app.UseHttpsRedirection();   // http -> https

@@ -23,5 +23,13 @@ public class DBContext : DbContext
         modelBuilder.Entity<Producto>()
         .Property(p => p.Precio)
         .HasPrecision(18, 2);
+
+        // Relación Producto -> Categoria: un producto tiene una categoría, una categoría tiene muchos productos.
+        // Restrict: NO deja borrar una categoría que todavía tenga productos (antes era Cascade y los borraba todos).
+        modelBuilder.Entity<Producto>()
+        .HasOne(p => p.Categoria)
+        .WithMany()
+        .HasForeignKey(p => p.CategoriaId)
+        .OnDelete(DeleteBehavior.Restrict);
     }
 }
