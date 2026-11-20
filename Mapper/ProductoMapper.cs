@@ -6,6 +6,7 @@ namespace VentasApi.Mapper;
 
 public static class ProductoMapper
 {
+    //ajustes en el mapper toDTO faltaba conseguir el nombre de la categoria
     public static ProductoDTO toDTO(this Producto producto)
     {
         return new ProductoDTO
@@ -14,7 +15,8 @@ public static class ProductoMapper
             Nombre = producto.Nombre,
             Precio = producto.Precio,
             Stock = producto.Stock,
-            CategoriaId = producto.CategoriaId
+            CategoriaId = producto.CategoriaId,
+            CategoriaNombre = producto.Categoria?.Nombre?? string.Empty
         };
     }
 

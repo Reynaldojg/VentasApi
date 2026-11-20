@@ -1,5 +1,4 @@
 using System;
-using Azure;
 using Microsoft.EntityFrameworkCore;
 using VentasApi.Data;
 using VentasApi.Models;
@@ -29,7 +28,7 @@ public class ProductoRepository : IProductoRepository
     public async Task<OperationResult<Producto>> GetById(int id)
     {
         var producto = await _DB.productos
-        .Include(c => c.CategoriaId)
+        .Include(c => c.Categoria)
         .FirstOrDefaultAsync(p => p.ID == id);
 
         if(producto == null)
@@ -67,7 +66,8 @@ public class ProductoRepository : IProductoRepository
         var resultado = await SaveChanges();
 
         if(!resultado.IsSuccess)
-            return OperationResult<Producto>.Failure("Error al eliminar cateoria");
+            // Mejora: se devuelve el mensaje real de SaveChanges (antes era un texto fijo).
+            return OperationResult<Producto>.Failure(resultado.Message);
         
         return OperationResult<Producto>.Success(producto, "Producto eliminado");
     }
