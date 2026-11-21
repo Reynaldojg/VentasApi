@@ -45,7 +45,59 @@ namespace VentasApi.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("categorias");
+                    b.ToTable("Categorias");
+                });
+
+            modelBuilder.Entity("VentasApi.Models.Cliente", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Apellido")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Cedula")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Direccion")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime?>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Telefono")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Cedula")
+                        .IsUnique();
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Clientes");
                 });
 
             modelBuilder.Entity("VentasApi.Models.Producto", b =>
@@ -80,7 +132,7 @@ namespace VentasApi.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.ToTable("productos");
+                    b.ToTable("Productos");
                 });
 
             modelBuilder.Entity("VentasApi.Operations.AuditiEntity", b =>

@@ -12,9 +12,10 @@ public class DBContext : DbContext
     public DBContext(DbContextOptions<DBContext> options) : base(options){}
 
     // Cada DbSet es una tabla de la base de datos.
-    public DbSet<Categoria> categorias {get; set;}
-    public DbSet<Producto> productos {get; set;}
+    public DbSet<Categoria> Categorias {get; set;}
+    public DbSet<Producto> Productos {get; set;}
     public DbSet<AuditiEntity> AuditiEntities {get; set;}
+    public DbSet<Cliente> Clientes {get; set;}
 
     // Configuración extra de tablas/columnas (Fluent API). Si cambias algo aquí, haz una migración.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,5 +32,16 @@ public class DBContext : DbContext
         .WithMany()
         .HasForeignKey(p => p.CategoriaId)
         .OnDelete(DeleteBehavior.Restrict);
+
+        // Cliente: no puede haber dos clientes con la misma cédula ni con el mismo email.
+        // Si se intenta, SQL Server lo rechaza (segunda protección, además de la validación del service).
+
+        modelBuilder.Entity<Cliente>()
+        .HasIndex(c => c.Cedula)
+        .IsUnique();
+
+        modelBuilder.Entity<Cliente>()
+        .HasIndex(c => c.Email)
+        .IsUnique();
     }
 }

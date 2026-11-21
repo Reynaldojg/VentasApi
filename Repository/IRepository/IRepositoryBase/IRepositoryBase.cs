@@ -11,5 +11,4 @@ public interface IRepositoryBase<T> where T : class
     Task<OperationResult<T>> Add(T entity);
     Task<OperationResult<T>> Update(T entity);
     Task<OperationResult<T>> Delete(T entity);
-    Task<OperationResult<bool>> SaveChanges();
 }

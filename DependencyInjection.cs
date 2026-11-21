@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<ICategoriaRepository, CategoriaRepository>();
         services.AddScoped<IProductoRepository, ProductoRepository>();
         services.AddScoped<IAuditiEntityRepository, AuditiEntityRepository>();
+        services.AddScoped<IClienteRepository, ClienteRepository>();
         return services;
     }
 
