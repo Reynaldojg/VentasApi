@@ -3,20 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using VentasApi.Data;
 using VentasApi.Models;
 using VentasApi.Operations;
+using VentasApi.Repository.Base;
 using VentasApi.Repository.IRepository;
 
 namespace VentasApi.Repository;
 
-public class ProductoRepository : IProductoRepository
+public class ProductoRepository : RepositoryBase, IProductoRepository
 {
-    private readonly DBContext _DB;
-    public ProductoRepository(DBContext dB)
-    {
-        _DB = dB;
-    }
+    // El DBContext (_db) y SaveChanges vienen de RepositoryBase.
+    public ProductoRepository(DBContext dB) : base(dB) { }
+
     public async Task<OperationResult<ICollection<Producto>>> GetAll()
     {
-        var producto = await _DB.productos
+        var producto = await _db.Productos
         .AsNoTracking()
         .Include(c => c.Categoria)
         .OrderBy(c =>c.Nombre)
@@ -27,7 +26,7 @@ public class ProductoRepository : IProductoRepository
 
     public async Task<OperationResult<Producto>> GetById(int id)
     {
-        var producto = await _DB.productos
+        var producto = await _db.Productos
         .Include(c => c.Categoria)
         .FirstOrDefaultAsync(p => p.ID == id);
 
@@ -39,7 +38,7 @@ public class ProductoRepository : IProductoRepository
     public async Task<OperationResult<Producto>> Add(Producto producto)
     {
         producto.FechaCreacion = DateTime.UtcNow;
-        await _DB.productos.AddAsync(producto);
+        await _db.Productos.AddAsync(producto);
         var resultado = await SaveChanges();
 
         if(!resultado.IsSuccess)
@@ -51,7 +50,7 @@ public class ProductoRepository : IProductoRepository
     public async Task<OperationResult<Producto>> Update(Producto producto)
     {
         producto.FechaModificacion = DateTime.UtcNow;
-        _DB.productos.Update(producto);
+        _db.Productos.Update(producto);
         var resultado = await SaveChanges();
 
         if(!resultado.IsSuccess)
@@ -62,7 +61,7 @@ public class ProductoRepository : IProductoRepository
 
     public async Task<OperationResult<Producto>> Delete(Producto producto)
     {
-        _DB.productos.Remove(producto);
+        _db.Productos.Remove(producto);
         var resultado = await SaveChanges();
 
         if(!resultado.IsSuccess)
@@ -74,20 +73,8 @@ public class ProductoRepository : IProductoRepository
 
     public async Task<bool> ExisteNombre(string nombre)
     {
-        return await _DB.productos.AnyAsync(p => p.Nombre == nombre);
+        return await _db.Productos.AnyAsync(p => p.Nombre == nombre);
     }
 
-    public async Task<OperationResult<bool>> SaveChanges()
-    {
-        try
-        {
-            var filasAfectadas = await _DB.SaveChangesAsync();
-            return OperationResult<bool>.Success(filasAfectadas > 0);
-        }
-        catch(DbUpdateException ex)
-        {
-            return OperationResult<bool>.Failure($"Error al guardar cambios: {ex.InnerException?.Message?? ex.Message}");
-        }
-    }
 
 }
